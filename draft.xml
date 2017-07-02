@@ -53,6 +53,120 @@
         
     </section>
     
+    <section title="Protocol Endpoints">
+      <t>
+        The authenticator binding process utilizes two authorization server
+        endpoints (HTTP resources):
+      </t>
+      <t>
+        <list style='symbols'>
+          <t>
+            Associate endpoint - used by the client to obtain parameters needed
+            to bind an authenticator to an authorization server.
+          </t>
+          <t>
+            Bind endpoint - used by the client to bind an authenticator to an
+            authorization server.
+          </t>
+        </list>
+      </t>
+      
+      <section title='Associate Endpoint' anchor="associate-endpoint">
+        <t>
+          The associate endpoint is used by the client to obtain parameters
+          needed to bind an authenticator to an authorization server.
+        </t>
+        
+        <section title='Associate Request' anchor="token-req">
+          <t>
+            The client makes a request to the associate endpoint by sending
+            the following parameters with a content type of <spanx style='verb'>application/json</spanx>:
+          </t>
+          <t>
+            <list style='hanging' hangIndent='6'>
+              <t hangText='mfa_token'>
+                <vspace />
+                REQUIRED. The MFA token received from the authorization server.
+              </t>
+              <t hangText='authenticator_types'>
+                <vspace />
+                OPTIONAL. Array of authenticator type strings that the client
+                supports.  These authenticator types are defined as follows:
+                
+                <list style="symbols">
+                  <t><spanx style="verb">otp</spanx>: A device that generates
+                  one-time passwords.</t>
+                  
+                  <t><spanx style="verb">oob</spanx>: A device that communicates
+                  securely with the authorization server over a secondary
+                  channel.</t>
+                </list>
+                
+                Authorization servers MAY allow for other values as defined in
+                the authenticator type extension process.
+              </t>
+              <t hangText='client_id'>
+                <vspace />
+                REQUIRED, if the client is not authenticating with the
+                authorization server as described in Section 3.2.1 of <xref target="RFC6749"/>.
+              </t>
+            </list>
+          </t>
+          <t>
+            If the client was issued client credentials (or assigned other
+            authentication requirements), the client MUST authenticate with the
+            authorization server as described in Section 3.2.1 of <xref target="RFC6749"/>.
+          </t>
+          <figure>
+            <preamble>
+              For example, the client makes the following HTTPS request (line
+              breaks are for display purposes only)::
+            </preamble>
+            <artwork><![CDATA[
+POST /associate HTTP/1.1
+Host: server.example.com
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+Content-Type: application/json
+
+{
+  "authenticator_types": [
+    "otp", "oob"
+  ]
+}
+]]></artwork>
+          </figure>
+          <t>
+            The authorization server MUST:
+          </t>
+          <t>
+            <list style='symbols'>
+              <t>
+                require client authentication for confidential clients or for
+                any client that was issued client credentials (or with other
+                authentication requirements),
+              </t>
+              <t>
+                authenticate the client if client authentication is included,
+              </t>
+              <t>
+                ensure the MFA token was issued to the authenticated
+                confidential client, or if the client is public, ensure the MFA
+                token was issued to <spanx style='verb'>client_id</spanx> in the
+                request,
+              </t>
+              <t>
+                verify that the MFA token is valid, and
+              </t>
+              <t>
+                restore the authorization session based on the claims in the MFA
+                token.
+              </t>
+            </list>
+          </t>
+        </section>
+      </section>
+    </section>
+    
   </middle>
   <back>
     <references title="Normative References">

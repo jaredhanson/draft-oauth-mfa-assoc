@@ -82,7 +82,98 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
 
       A short-lived token representing an authorization session.
 
-2.  Normative References
+2.  Protocol Endpoints
+
+   The authenticator binding process utilizes two authorization server
+   endpoints (HTTP resources):
+
+   o  Associate endpoint - used by the client to obtain parameters
+      needed to bind an authenticator to an authorization server.
+
+   o  Bind endpoint - used by the client to bind an authenticator to an
+      authorization server.
+
+2.1.  Associate Endpoint
+
+   The associate endpoint is used by the client to obtain parameters
+   needed to bind an authenticator to an authorization server.
+
+2.1.1.  Associate Request
+
+   The client makes a request to the associate endpoint by sending the
+   following parameters with a content type of "application/json":
+
+   mfa_token
+         REQUIRED.  The MFA token received from the authorization
+         server.
+
+
+
+Hanson                   Expires January 3, 2018                [Page 2]
+
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+
+
+   authenticator_types
+         OPTIONAL.  Array of authenticator type strings that the client
+         supports.  These authenticator types are defined as follows:
+
+         *  "otp": A device that generates one-time passwords.
+
+         *  "oob": A device that communicates securely with the
+            authorization server over a secondary channel.
+
+         Authorization servers MAY allow for other values as defined in
+         the authenticator type extension process.
+
+   client_id
+         REQUIRED, if the client is not authenticating with the
+         authorization server as described in Section 3.2.1 of
+         [RFC6749].
+
+   If the client was issued client credentials (or assigned other
+   authentication requirements), the client MUST authenticate with the
+   authorization server as described in Section 3.2.1 of [RFC6749].
+
+   For example, the client makes the following HTTPS request (line
+   breaks are for display purposes only)::
+
+   POST /associate HTTP/1.1
+   Host: server.example.com
+   Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+   Content-Type: application/json
+
+   {
+     "authenticator_types": [
+       "otp", "oob"
+     ]
+   }
+
+   The authorization server MUST:
+
+   o  require client authentication for confidential clients or for any
+      client that was issued client credentials (or with other
+      authentication requirements),
+
+   o  authenticate the client if client authentication is included,
+
+   o  ensure the MFA token was issued to the authenticated confidential
+      client, or if the client is public, ensure the MFA token was
+      issued to "client_id" in the request,
+
+   o  verify that the MFA token is valid, and
+
+
+
+Hanson                   Expires January 3, 2018                [Page 3]
+
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+
+
+   o  restore the authorization session based on the claims in the MFA
+      token.
+
+3.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -102,17 +193,6 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
               Jones, M., Sakimura, N., and J. Bradley, "OAuth 2.0
               Authorization Server Metadata", draft-ietf-oauth-
               discovery-05 (work in progress), January 2017.
-
-
-
-
-
-
-
-Hanson                   Expires January 3, 2018                [Page 2]
-
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
-
 
 Author's Address
 
@@ -141,28 +221,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Hanson                   Expires January 3, 2018                [Page 3]
+Hanson                   Expires January 3, 2018                [Page 4]
