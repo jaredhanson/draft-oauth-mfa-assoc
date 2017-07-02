@@ -105,6 +105,31 @@
                 Authorization servers MAY allow for other values as defined in
                 the authenticator type extension process.
               </t>
+              <t hangText='oob_channels'>
+                <vspace />
+                OPTIONAL. Array of out-of-band channel strings that the client
+                supports.  These out-of-band channels are defined as follows:
+                
+                <list style="symbols">
+                  <t><spanx style="verb">sms</spanx>: SMS channel to the user at
+                  a registered number.</t>
+                  
+                  <t><spanx style="verb">tel</spanx>: Telephone call to the user
+                  at a registered number.</t>
+                  
+                  <t><spanx style="verb">email</spanx>: E-mail sent to the user
+                  at a registered address.</t>
+                  
+                  <t><spanx style="verb">auth0</spanx>: Push notification to
+                  Guardian app on user's mobile device.</t>
+                  
+                  <t><spanx style="verb">duo</spanx>: Push notification to Duo
+                  Mobile app on user's mobile device.</t>
+                </list>
+                
+                Authorization servers MAY allow for other values as defined in
+                the out-of-band channel extension process.
+              </t>
               <t hangText='client_id'>
                 <vspace />
                 REQUIRED, if the client is not authenticating with the

@@ -126,6 +126,25 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
          Authorization servers MAY allow for other values as defined in
          the authenticator type extension process.
 
+   oob_channels
+         OPTIONAL.  Array of out-of-band channel strings that the client
+         supports.  These out-of-band channels are defined as follows:
+
+         *  "sms": SMS channel to the user at a registered number.
+
+         *  "tel": Telephone call to the user at a registered number.
+
+         *  "email": E-mail sent to the user at a registered address.
+
+         *  "auth0": Push notification to Guardian app on user's mobile
+            device.
+
+         *  "duo": Push notification to Duo Mobile app on user's mobile
+            device.
+
+         Authorization servers MAY allow for other values as defined in
+         the out-of-band channel extension process.
+
    client_id
          REQUIRED, if the client is not authenticating with the
          authorization server as described in Section 3.2.1 of
@@ -134,6 +153,22 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
    If the client was issued client credentials (or assigned other
    authentication requirements), the client MUST authenticate with the
    authorization server as described in Section 3.2.1 of [RFC6749].
+
+
+
+
+
+
+
+
+
+
+
+
+Hanson                   Expires January 3, 2018                [Page 3]
+
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+
 
    For example, the client makes the following HTTPS request (line
    breaks are for display purposes only)::
@@ -163,13 +198,6 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
 
    o  verify that the MFA token is valid, and
 
-
-
-Hanson                   Expires January 3, 2018                [Page 3]
-
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
-
-
    o  restore the authorization session based on the claims in the MFA
       token.
 
@@ -188,6 +216,15 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
               <http://www.rfc-editor.org/info/rfc6749>.
+
+
+
+
+
+Hanson                   Expires January 3, 2018                [Page 4]
+
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+
 
    [I-D.ietf-oauth-discovery]
               Jones, M., Sakimura, N., and J. Bradley, "OAuth 2.0
@@ -221,4 +258,23 @@ Author's Address
 
 
 
-Hanson                   Expires January 3, 2018                [Page 4]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hanson                   Expires January 3, 2018                [Page 5]
