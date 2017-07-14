@@ -82,38 +82,17 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
       A short-lived token representing an authorization session.
 
-2.  Protocol Endpoints
+2.  Authenticator Associate Endpoint
 
-   The authenticator binding process utilizes one authorization server
-   endpoint (HTTP resource):
+   The associate endpoint is used by the client to associate an
+   authenticator with an authorization server.
 
-   o  Associate endpoint - used by the client to associate an
-      authenticator to an authorization server.
-
-2.1.  Associate Endpoint
-
-   The associate endpoint is used by the client to obtain parameters
-   needed to bind an authenticator to an authorization server.
-
-2.1.1.  Associate Request
+2.1.  Authenticator Associate Request
 
    The client makes a request to the associate endpoint by sending the
    following parameters with a content type of "application/json":
 
-   mfa_token
-         REQUIRED.  The MFA token received from the authorization
-         server.
-
    authenticator_types
-
-
-
-
-Hanson                  Expires January 15, 2018                [Page 2]
-
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
-
-
          OPTIONAL.  Array of authenticator type strings that the client
          supports.  These authenticator types are defined as follows:
 
@@ -126,6 +105,15 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
          the authenticator type extension process.
 
    oob_channels
+
+
+
+
+Hanson                  Expires January 15, 2018                [Page 2]
+
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+
+
          OPTIONAL.  Array of out-of-band channel strings that the client
          supports.  These out-of-band channels are defined as follows:
 
@@ -142,33 +130,13 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
             device.
 
          Authorization servers MAY allow for other values as defined in
-         the out-of-band channel extension process.
-
-   client_id
-         REQUIRED, if the client is not authenticating with the
-         authorization server as described in Section 3.2.1 of
-         [RFC6749].
+         the out-of-band channel extension process.  This parameter is
+         used when the client indicates support for authenticator types
+         including the value "oob".
 
    If the client was issued client credentials (or assigned other
    authentication requirements), the client MUST authenticate with the
    authorization server as described in Section 3.2.1 of [RFC6749].
-
-
-
-
-
-
-
-
-
-
-
-
-
-Hanson                  Expires January 15, 2018                [Page 3]
-
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
-
 
    For example, the client makes the following HTTPS request (line
    breaks are for display purposes only)::
@@ -179,10 +147,10 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
    Content-Type: application/json
 
    {
-     "mfa_token": "eyJhbGciOiJ...",
-     "authenticator_types": [
-       "otp", "oob"
-     ]
+   "mfa_token": "eyJhbGciOiJ...",
+   "authenticator_types": [
+     "otp", "oob"
+   ]
    }
 
    The authorization server MUST:
@@ -193,6 +161,15 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
    o  authenticate the client if client authentication is included,
 
+
+
+
+
+Hanson                  Expires January 15, 2018                [Page 3]
+
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+
+
    o  ensure the MFA token was issued to the authenticated confidential
       client, or if the client is public, ensure the MFA token was
       issued to "client_id" in the request,
@@ -202,7 +179,7 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
    o  ensure that MFA binding is allowed based on the claims in the MFA
       token.
 
-2.1.2.  Associate Response
+2.2.  Associate Response
 
    If the associate request is valid and authorized, the authorization
    server selects an authenticator that the client is capable of
@@ -217,15 +194,6 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
          10 minutes is RECOMMENDED.
 
    authenticator_type
-
-
-
-
-Hanson                  Expires January 15, 2018                [Page 4]
-
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
-
-
          REQUIRED.  Authenticator type to associate with the user's
          account.
 
@@ -235,184 +203,6 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
    The response MAY include additional parameters that are interpreted
    according to an authenticator type definition.
-
-2.2.  Bind Endpoint
-
-   The bind endpoint is used by the client to bind an authenticator to a
-   user's account on the authorization server.
-
-2.2.1.  Bind Request
-
-   The client makes a request to the bind endpoint by sending the
-   following parameters with a content type of "application/json":
-
-   mfa_token
-         REQUIRED.  The MFA token received from the authorization
-         server.
-
-   bind_code
-         REQUIRED.  The bind token received from the authorization
-         server.
-
-   client_id
-         REQUIRED, if the client is not authenticating with the
-         authorization server as described in Section 3.2.1 of
-         [RFC6749].
-
-   If the client was issued client credentials (or assigned other
-   authentication requirements), the client MUST authenticate with the
-   authorization server as described in Section 3.2.1 of [RFC6749].
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Hanson                  Expires January 15, 2018                [Page 5]
-
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
-
-
-   For example, the client makes the following HTTPS request (line
-   breaks are for display purposes only)::
-
-   POST /bind HTTP/1.1
-   Host: server.example.com
-   Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
-   Content-Type: application/json
-
-   {
-     "mfa_token": "eyJhbGciOiJ...",
-     "bind_code": "eyJ0eXAiOiJ..."
-   }
-
-   The authorization server MUST:
-
-   o  require client authentication for confidential clients or for any
-      client that was issued client credentials (or with other
-      authentication requirements),
-
-   o  authenticate the client if client authentication is included,
-
-   o  ensure the MFA token was issued to the authenticated confidential
-      client, or if the client is public, ensure the MFA token was
-      issued to "client_id" in the request,
-
-   o  verify that the MFA token is valid, and
-
-   o  ensure that MFA binding is allowed based on the claims in the MFA
-      token.
-
-2.2.2.  Bind Response
-
-   If the bind request is valid and authorized, the authorization server
-   binds the authenticator to the user's account and responds with an
-   HTTP 200 OK status code and a body of type "application/json" with
-   the following content:
-
-   active
-         REQUIRED.  Boolean indicator of whether or not the presented
-         token is currently active.
-
-2.2.3.  Bind Error Response
-
-   If the bind request failed client authentication or is invalid, the
-   authorization server responds with an HTTP 400 (Bad Request) status
-   code (unless specified otherwise) and includes the following
-   parameters with the response:
-
-
-
-
-Hanson                  Expires January 15, 2018                [Page 6]
-
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
-
-
-   error
-         REQUIRED.  A single ASCII error code from the following:
-
-         invalid_request
-               The request is missing a required parameter, includes an
-               unsupported parameter value (other than authenticator
-               type), repeats a parameter, includes multiple
-               credentials, utilizes more than one mechanism for
-               authenticating the client, or is otherwise malformed.
-
-         invalid_client
-               Client authentication failed (e.g. unknown client, no
-               client authentication included, or unsupported
-               authentication method).  The authorization server MAY
-               return an HTTP 401 (Unauthorized) status code to indicate
-               which HTTP authentication schemes are supported.  If the
-               client attempted to authenticate via the "Authorization"
-               request header field, the authorization server MUST
-               respond with an HTTP 401 (Unauthorized) status code, and
-               include the "WWW-Authenticate" response header field
-               matching the authentication scheme used by the client.
-
-         operation_pending
-               The bind operation has not yet completed.
-
-         operation_denied
-               The user or authorization server denied the bind
-               operation.
-
-         slow_down
-               The client is polling too quickly and should back off at
-               a reasonable rate.
-
-         expired_token
-               The provided MFA token or bind code is invalid, expired,
-               or revoked.  The client will need to initiate a new
-               binding operation.
-
-         unauthorized_client
-               The authenticated client is not authorized to bind an
-               authenticator.
-
-         unsupported_authenticator_type
-               The authenticator types supported by the client are not
-               supported by the authorization server or not available to
-               the resource owner.
-
-         server_error
-
-
-
-Hanson                  Expires January 15, 2018                [Page 7]
-
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
-
-
-               The authorization server encountered an unexpected
-               condition that prevented it from fulfilling the request.
-
-         bad_gateway
-               The authorization server received an invalid response
-               from an upstream server it accessed in attempting to
-               fulfull the request.  This typically occurs when binding
-               an OOB authenticator and the gateway is down, for example
-               SMS.
-
-   error_description
-         OPTIONAL.  A human-readable ASCII text providing additional
-         information, used to assist the client developer in
-         understanding the error that occurred.
-
-   error_uri
-         OPTIONAL.  A URI identifying a human-readable web page with
-         information about the error, used to provide the client
-         developer with additional information about the error.
 
 3.  Normative References
 
@@ -425,6 +215,16 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
               JavaScript Object Notation (JSON)", RFC 4627,
               DOI 10.17487/RFC4627, July 2006,
               <http://www.rfc-editor.org/info/rfc4627>.
+
+
+
+
+
+
+Hanson                  Expires January 15, 2018                [Page 4]
+
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+
 
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
@@ -445,4 +245,36 @@ Author's Address
 
 
 
-Hanson                  Expires January 15, 2018                [Page 8]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hanson                  Expires January 15, 2018                [Page 5]

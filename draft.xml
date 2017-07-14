@@ -53,368 +53,152 @@
         
     </section>
     
-    <section title="Protocol Endpoints">
+    <section title="Authenticator Associate Endpoint">
       <t>
-        The authenticator binding process utilizes one authorization server
-        endpoint (HTTP resource):
+        The associate endpoint is used by the client to associate an
+        authenticator with an authorization server.
       </t>
-      <t>
-        <list style='symbols'>
-          <t>
-            Associate endpoint - used by the client to associate an
-            authenticator to an authorization server.
-          </t>
-        </list>
-      </t>
-      
-      <section title='Associate Endpoint' anchor="associate-endpoint">
-        <t>
-          The associate endpoint is used by the client to obtain parameters
-          needed to bind an authenticator to an authorization server.
-        </t>
         
-        <section title='Associate Request' anchor="token-req">
-          <t>
-            The client makes a request to the associate endpoint by sending
-            the following parameters with a content type of <spanx style='verb'>application/json</spanx>:
-          </t>
-          <t>
-            <list style='hanging' hangIndent='6'>
-              <t hangText='mfa_token'>
-                <vspace />
-                REQUIRED. The MFA token received from the authorization server.
-              </t>
-              <t hangText='authenticator_types'>
-                <vspace />
-                OPTIONAL. Array of authenticator type strings that the client
-                supports.  These authenticator types are defined as follows:
+      <section title='Authenticator Associate Request' anchor="token-req">
+        <t>
+          The client makes a request to the associate endpoint by sending
+          the following parameters with a content type of <spanx style='verb'>application/json</spanx>:
+        </t>
+        <t>
+          <list style='hanging' hangIndent='6'>
+            <t hangText='authenticator_types'>
+              <vspace />
+              OPTIONAL. Array of authenticator type strings that the client
+              supports.  These authenticator types are defined as follows:
+              
+              <list style="symbols">
+                <t><spanx style="verb">otp</spanx>: A device that generates
+                one-time passwords.</t>
                 
-                <list style="symbols">
-                  <t><spanx style="verb">otp</spanx>: A device that generates
-                  one-time passwords.</t>
-                  
-                  <t><spanx style="verb">oob</spanx>: A device that communicates
-                  securely with the authorization server over a secondary
-                  channel.</t>
-                </list>
+                <t><spanx style="verb">oob</spanx>: A device that communicates
+                securely with the authorization server over a secondary
+                channel.</t>
+              </list>
+              
+              Authorization servers MAY allow for other values as defined in
+              the authenticator type extension process.
+            </t>
+            <t hangText='oob_channels'>
+              <vspace />
+              OPTIONAL. Array of out-of-band channel strings that the client
+              supports.  These out-of-band channels are defined as follows:
+              
+              <list style="symbols">
+                <t><spanx style="verb">sms</spanx>: SMS channel to the user at
+                a registered number.</t>
                 
-                Authorization servers MAY allow for other values as defined in
-                the authenticator type extension process.
-              </t>
-              <t hangText='oob_channels'>
-                <vspace />
-                OPTIONAL. Array of out-of-band channel strings that the client
-                supports.  These out-of-band channels are defined as follows:
+                <t><spanx style="verb">tel</spanx>: Telephone call to the user
+                at a registered number.</t>
                 
-                <list style="symbols">
-                  <t><spanx style="verb">sms</spanx>: SMS channel to the user at
-                  a registered number.</t>
-                  
-                  <t><spanx style="verb">tel</spanx>: Telephone call to the user
-                  at a registered number.</t>
-                  
-                  <t><spanx style="verb">email</spanx>: E-mail sent to the user
-                  at a registered address.</t>
-                  
-                  <t><spanx style="verb">auth0</spanx>: Push notification to
-                  Guardian app on user's mobile device.</t>
-                  
-                  <t><spanx style="verb">duo</spanx>: Push notification to Duo
-                  Mobile app on user's mobile device.</t>
-                </list>
+                <t><spanx style="verb">email</spanx>: E-mail sent to the user
+                at a registered address.</t>
                 
-                Authorization servers MAY allow for other values as defined in
-                the out-of-band channel extension process.
-              </t>
-              <t hangText='client_id'>
-                <vspace />
-                REQUIRED, if the client is not authenticating with the
-                authorization server as described in Section 3.2.1 of <xref target="RFC6749"/>.
-              </t>
-            </list>
-          </t>
-          <t>
-            If the client was issued client credentials (or assigned other
-            authentication requirements), the client MUST authenticate with the
-            authorization server as described in Section 3.2.1 of <xref target="RFC6749"/>.
-          </t>
-          <figure>
-            <preamble>
-              For example, the client makes the following HTTPS request (line
-              breaks are for display purposes only)::
-            </preamble>
-            <artwork><![CDATA[
+                <t><spanx style="verb">auth0</spanx>: Push notification to
+                Guardian app on user's mobile device.</t>
+                
+                <t><spanx style="verb">duo</spanx>: Push notification to Duo
+                Mobile app on user's mobile device.</t>
+              </list>
+              
+              Authorization servers MAY allow for other values as defined in
+              the out-of-band channel extension process.  This parameter is
+              used when the client indicates support for authenticator types
+              including the value "oob".
+            </t>
+          </list>
+        </t>
+        <t>
+          If the client was issued client credentials (or assigned other
+          authentication requirements), the client MUST authenticate with the
+          authorization server as described in Section 3.2.1 of <xref target="RFC6749"/>.
+        </t>
+        <figure>
+          <preamble>
+            For example, the client makes the following HTTPS request (line
+            breaks are for display purposes only)::
+          </preamble>
+          <artwork><![CDATA[
 POST /associate HTTP/1.1
 Host: server.example.com
 Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/json
 
 {
-  "mfa_token": "eyJhbGciOiJ...",
-  "authenticator_types": [
-    "otp", "oob"
-  ]
+"mfa_token": "eyJhbGciOiJ...",
+"authenticator_types": [
+  "otp", "oob"
+]
 }
 ]]></artwork>
-          </figure>
-          <t>
-            The authorization server MUST:
-          </t>
-          <t>
-            <list style='symbols'>
-              <t>
-                require client authentication for confidential clients or for
-                any client that was issued client credentials (or with other
-                authentication requirements),
-              </t>
-              <t>
-                authenticate the client if client authentication is included,
-              </t>
-              <t>
-                ensure the MFA token was issued to the authenticated
-                confidential client, or if the client is public, ensure the MFA
-                token was issued to <spanx style='verb'>client_id</spanx> in the
-                request,
-              </t>
-              <t>
-                verify that the MFA token is valid, and
-              </t>
-              <t>
-                ensure that MFA binding is allowed based on the claims in the
-                MFA token.
-              </t>
-            </list>
-          </t>
-        </section>
-        
-        <section title='Associate Response' anchor="token-res">
-          <t>
-            If the associate request is valid and authorized, the authorization
-            server selects an authenticator that the client is capable of
-            supporting, and responds with an HTTP 200 OK status code and a body
-            of type "application/json" with the following content:
-          </t>
-          <t>
-            <list style='hanging' hangIndent='6'>
-              <t hangText='bind_code'>
-                <vspace />
-                REQUIRED.  Bind code generated by the authorization server, used
-                to complete binding of the authenticator to the user's account.
-                The bind code MUST expire shortly after it is issued to mitigate
-                the risk of leaks.  A maximum bind code lifetime of 10 minutes
-                is RECOMMENDED.
-              </t>
-              <t hangText='authenticator_type'>
-                <vspace />
-                REQUIRED.  Authenticator type to associate with the user's
-                account.
-              </t>
-              <t hangText='barcode_uri'>
-                <vspace />
-                OPTIONAL. URI to be rendered as a barcode which can be scanned
-                by the authenticator to effect provisioning.
-              </t>
-            </list>
-          </t>
-          <t>
-            The response MAY include additional parameters that are interpreted
-            according to an authenticator type definition.
-          </t>
-        </section>
+        </figure>
+        <t>
+          The authorization server MUST:
+        </t>
+        <t>
+          <list style='symbols'>
+            <t>
+              require client authentication for confidential clients or for
+              any client that was issued client credentials (or with other
+              authentication requirements),
+            </t>
+            <t>
+              authenticate the client if client authentication is included,
+            </t>
+            <t>
+              ensure the MFA token was issued to the authenticated
+              confidential client, or if the client is public, ensure the MFA
+              token was issued to <spanx style='verb'>client_id</spanx> in the
+              request,
+            </t>
+            <t>
+              verify that the MFA token is valid, and
+            </t>
+            <t>
+              ensure that MFA binding is allowed based on the claims in the
+              MFA token.
+            </t>
+          </list>
+        </t>
       </section>
       
-      <section title='Bind Endpoint' anchor="bind-endpoint">
+      <section title='Associate Response' anchor="token-res">
         <t>
-          The bind endpoint is used by the client to bind an authenticator to a
-          user's account on the authorization server.
+          If the associate request is valid and authorized, the authorization
+          server selects an authenticator that the client is capable of
+          supporting, and responds with an HTTP 200 OK status code and a body
+          of type "application/json" with the following content:
         </t>
-        
-        <section title='Bind Request' anchor="bind-req">
-          <t>
-            The client makes a request to the bind endpoint by sending
-            the following parameters with a content type of <spanx style='verb'>application/json</spanx>:
-          </t>
-          <t>
-            <list style='hanging' hangIndent='6'>
-              <t hangText='mfa_token'>
-                <vspace />
-                REQUIRED. The MFA token received from the authorization server.
-              </t>
-              <t hangText='bind_code'>
-                <vspace />
-                REQUIRED. The bind token received from the authorization server.
-              </t>
-              <t hangText='client_id'>
-                <vspace />
-                REQUIRED, if the client is not authenticating with the
-                authorization server as described in Section 3.2.1 of <xref target="RFC6749"/>.
-              </t>
-            </list>
-          </t>
-          <t>
-            If the client was issued client credentials (or assigned other
-            authentication requirements), the client MUST authenticate with the
-            authorization server as described in Section 3.2.1 of <xref target="RFC6749"/>.
-          </t>
-          <figure>
-            <preamble>
-              For example, the client makes the following HTTPS request (line
-              breaks are for display purposes only)::
-            </preamble>
-            <artwork><![CDATA[
-POST /bind HTTP/1.1
-Host: server.example.com
-Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
-Content-Type: application/json
-
-{
-  "mfa_token": "eyJhbGciOiJ...",
-  "bind_code": "eyJ0eXAiOiJ..."
-}
-]]></artwork>
-          </figure>
-          <t>
-            The authorization server MUST:
-          </t>
-          <t>
-            <list style='symbols'>
-              <t>
-                require client authentication for confidential clients or for
-                any client that was issued client credentials (or with other
-                authentication requirements),
-              </t>
-              <t>
-                authenticate the client if client authentication is included,
-              </t>
-              <t>
-                ensure the MFA token was issued to the authenticated
-                confidential client, or if the client is public, ensure the MFA
-                token was issued to <spanx style='verb'>client_id</spanx> in the
-                request,
-              </t>
-              <t>
-                verify that the MFA token is valid, and
-              </t>
-              <t>
-                ensure that MFA binding is allowed based on the claims in the
-                MFA token.
-              </t>
-            </list>
-          </t>
-        </section>
-        
-        <section title='Bind Response' anchor="bind-res">
-          <t>
-            If the bind request is valid and authorized, the authorization
-            server binds the authenticator to the user's account and responds
-            with an HTTP 200 OK status code and a body of type "application/json"
-            with the following content:
-          </t>
-          <t>
-            <list style='hanging' hangIndent='6'>
-              <t hangText='active'>
-                <vspace />
-                REQUIRED.  Boolean indicator of whether or not the presented token
-                is currently active.
-              </t>
-            </list>
-          </t>
-        </section>
-        
-        <section title='Bind Error Response' anchor="bind-err-res">
-          <t>
-            If the bind request failed client authentication or is invalid, the
-            authorization server responds with an HTTP 400 (Bad Request) status
-            code (unless specified otherwise) and includes the following
-            parameters with the response:
-          </t>
-          <t>
-            <list style='hanging' hangIndent='6'>
-              <t hangText='error'>
-                <vspace />
-                REQUIRED. A single ASCII error code from the following:
-                
-                <list style='hanging' hangIndent='6'>
-                  <t hangText='invalid_request'>
-                    <vspace />
-                    The request is missing a required parameter, includes an
-                    unsupported parameter value (other than authenticator type),
-                    repeats a parameter, includes multiple credentials, utilizes
-                    more than one mechanism for authenticating the client, or is
-                    otherwise malformed.
-                  </t>
-                  <t hangText='invalid_client'>
-                    <vspace />
-                    Client authentication failed (e.g. unknown client, no client
-                    authentication included, or unsupported authentication
-                    method). The authorization server MAY return an HTTP 401
-                    (Unauthorized) status code to indicate which HTTP
-                    authentication schemes are supported. If the client
-                    attempted to authenticate via the <spanx style='verb'>Authorization</spanx>
-                    request header field, the authorization server MUST respond
-                    with an HTTP 401 (Unauthorized) status code, and include the
-                    <spanx style='verb'>WWW-Authenticate</spanx> response header
-                    field matching the authentication scheme used by the client.
-                  </t>
-                  <t hangText="operation_pending">
-                    <vspace/>
-                    The bind operation has not yet completed.
-                  </t>
-                  <t hangText="operation_denied">
-                    <vspace/>
-                    The user or authorization server denied the bind operation.
-                  </t>
-                  <t hangText="slow_down">
-                    <vspace/>
-                    The client is polling too quickly and should back off at a
-                    reasonable rate.
-                  </t>
-                  <t hangText='expired_token'>
-                    <vspace />
-                    The provided MFA token or bind code is invalid, expired, or
-                    revoked.  The client will need to initiate a new binding
-                    operation.
-                  </t>
-                  <t hangText='unauthorized_client'>
-                    <vspace />
-                    The authenticated client is not authorized to bind an
-                    authenticator.
-                  </t>
-                  <t hangText='unsupported_authenticator_type'>
-                    <vspace />
-                    The authenticator types supported by the client are not
-                    supported by the authorization server or not available to
-                    the resource owner.
-                  </t>
-                  <t hangText='server_error'>
-                    <vspace />
-                    The authorization server encountered an unexpected condition
-                    that prevented it from fulfilling the request.
-                  </t>
-                  <t hangText='bad_gateway'>
-                    <vspace />
-                    The authorization server received an invalid response from
-                    an upstream server it accessed in attempting to fulfull the
-                    request.  This typically occurs when binding an OOB
-                    authenticator and the gateway is down, for example SMS.
-                  </t>
-                </list>
-              </t>
-              <t hangText='error_description'>
-                <vspace />
-                OPTIONAL. A human-readable ASCII text providing additional
-                information, used to assist the client developer in
-                understanding the error that occurred.
-              </t>
-              <t hangText='error_uri'>
-                <vspace />
-                OPTIONAL. A URI identifying a human-readable web page with
-                information about the error, used to provide the client
-                developer with additional information about the error.
-              </t>
-            </list>
-          </t>
-        </section>
+        <t>
+          <list style='hanging' hangIndent='6'>
+            <t hangText='bind_code'>
+              <vspace />
+              REQUIRED.  Bind code generated by the authorization server, used
+              to complete binding of the authenticator to the user's account.
+              The bind code MUST expire shortly after it is issued to mitigate
+              the risk of leaks.  A maximum bind code lifetime of 10 minutes
+              is RECOMMENDED.
+            </t>
+            <t hangText='authenticator_type'>
+              <vspace />
+              REQUIRED.  Authenticator type to associate with the user's
+              account.
+            </t>
+            <t hangText='barcode_uri'>
+              <vspace />
+              OPTIONAL. URI to be rendered as a barcode which can be scanned
+              by the authenticator to effect provisioning.
+            </t>
+          </list>
+        </t>
+        <t>
+          The response MAY include additional parameters that are interpreted
+          according to an authenticator type definition.
+        </t>
       </section>
     </section>
     
