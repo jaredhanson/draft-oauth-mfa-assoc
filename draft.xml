@@ -5,9 +5,9 @@
 <!ENTITY xmlns SYSTEM 'bibxml/reference.W3C.REC-xml-names-19990114.xml'>      
 <!ENTITY rdfsg SYSTEM 'bibxml/reference.W3C.WD-rdf-syntax-grammar-20031010.xml'>      
 ]>
-<rfc docName="draft-hanson-oauth-mfa-latest">
+<rfc docName="draft-hanson-oauth-mfa-assoc-latest">
   <front>
-    <title>OAuth 2.0 Multi-Factor Authenticator Binding</title>
+    <title>OAuth 2.0 Multi-Factor Authenticator Association</title>
     <author initials="J." surname="Hanson" fullname="Jared Hanson">
       <organization>Auth0 Inc.</organization>
       <address>       
@@ -17,9 +17,9 @@
     </author>
     <date/>
     <abstract>
-      <t>This specification defines mechanisms for dynamically binding
-        authenticators with authorization servers.  Once bound, an authenticator
-        can be used for strong authorization within OAuth 2.0.</t>
+      <t>This specification defines mechanisms for dynamically associating
+        authenticators with authorization servers.  Once associated, an
+        authenticator can be used for strong authorization within OAuth 2.0.</t>
     </abstract>
   </front>
   <middle>
@@ -30,7 +30,7 @@
         authorization, it must associate resource owners with one or more
         authenticators capable of responding to a strong authorization
         challenge.  This specification describes how an authenticator can be
-        dynamically bound with an authorization server to obtain this
+        dynamically associated with an authorization server to obtain this
         information.
       </t>
         
@@ -55,18 +55,14 @@
     
     <section title="Protocol Endpoints">
       <t>
-        The authenticator binding process utilizes two authorization server
-        endpoints (HTTP resources):
+        The authenticator binding process utilizes one authorization server
+        endpoint (HTTP resource):
       </t>
       <t>
         <list style='symbols'>
           <t>
-            Associate endpoint - used by the client to obtain parameters needed
-            to bind an authenticator to an authorization server.
-          </t>
-          <t>
-            Bind endpoint - used by the client to bind an authenticator to an
-            authorization server.
+            Associate endpoint - used by the client to associate an
+            authenticator to an authorization server.
           </t>
         </list>
       </t>

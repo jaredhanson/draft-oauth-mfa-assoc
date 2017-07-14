@@ -4,16 +4,16 @@
 
 Network Working Group                                          J. Hanson
 Internet-Draft                                                Auth0 Inc.
-Expires: January 3, 2018                                    July 2, 2017
+Expires: January 15, 2018                                  July 14, 2017
 
 
-              OAuth 2.0 Multi-Factor Authenticator Binding
-                     draft-hanson-oauth-mfa-latest
+            OAuth 2.0 Multi-Factor Authenticator Association
+                  draft-hanson-oauth-mfa-assoc-latest
 
 Abstract
 
-   This specification defines mechanisms for dynamically binding
-   authenticators with authorization servers.  Once bound, an
+   This specification defines mechanisms for dynamically associating
+   authenticators with authorization servers.  Once associated, an
    authenticator can be used for strong authorization within OAuth 2.0.
 
 Status of This Memo
@@ -31,7 +31,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 3, 2018.
+   This Internet-Draft will expire on January 15, 2018.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Hanson                   Expires January 3, 2018                [Page 1]
+Hanson                  Expires January 15, 2018                [Page 1]
 
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
 1.  Introduction
@@ -64,7 +64,7 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
    authorization, it must associate resource owners with one or more
    authenticators capable of responding to a strong authorization
    challenge.  This specification describes how an authenticator can be
-   dynamically bound with an authorization server to obtain this
+   dynamically associated with an authorization server to obtain this
    information.
 
 1.1.  Notational Conventions
@@ -84,14 +84,11 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
 
 2.  Protocol Endpoints
 
-   The authenticator binding process utilizes two authorization server
-   endpoints (HTTP resources):
+   The authenticator binding process utilizes one authorization server
+   endpoint (HTTP resource):
 
-   o  Associate endpoint - used by the client to obtain parameters
-      needed to bind an authenticator to an authorization server.
-
-   o  Bind endpoint - used by the client to bind an authenticator to an
-      authorization server.
+   o  Associate endpoint - used by the client to associate an
+      authenticator to an authorization server.
 
 2.1.  Associate Endpoint
 
@@ -107,14 +104,16 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
          REQUIRED.  The MFA token received from the authorization
          server.
 
-
-
-Hanson                   Expires January 3, 2018                [Page 2]
-
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
-
-
    authenticator_types
+
+
+
+
+Hanson                  Expires January 15, 2018                [Page 2]
+
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+
+
          OPTIONAL.  Array of authenticator type strings that the client
          supports.  These authenticator types are defined as follows:
 
@@ -165,9 +164,10 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
 
 
 
-Hanson                   Expires January 3, 2018                [Page 3]
+
+Hanson                  Expires January 15, 2018                [Page 3]
 
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
    For example, the client makes the following HTTPS request (line
@@ -221,9 +221,9 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
 
 
 
-Hanson                   Expires January 3, 2018                [Page 4]
+Hanson                  Expires January 15, 2018                [Page 4]
 
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
          REQUIRED.  Authenticator type to associate with the user's
@@ -277,9 +277,9 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
 
 
 
-Hanson                   Expires January 3, 2018                [Page 5]
+Hanson                  Expires January 15, 2018                [Page 5]
 
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
    For example, the client makes the following HTTPS request (line
@@ -333,9 +333,9 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
 
 
 
-Hanson                   Expires January 3, 2018                [Page 6]
+Hanson                  Expires January 15, 2018                [Page 6]
 
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
    error
@@ -389,9 +389,9 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
 
 
 
-Hanson                   Expires January 3, 2018                [Page 7]
+Hanson                  Expires January 15, 2018                [Page 7]
 
-Internet-DraftOAuth 2.0 Multi-Factor Authenticator Binding     July 2017
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
                The authorization server encountered an unexpected
@@ -445,4 +445,4 @@ Author's Address
 
 
 
-Hanson                   Expires January 3, 2018                [Page 8]
+Hanson                  Expires January 15, 2018                [Page 8]
