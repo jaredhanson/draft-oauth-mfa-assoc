@@ -13,7 +13,7 @@ Expires: January 15, 2018                                  July 14, 2017
 Abstract
 
    This specification defines mechanisms for dynamically associating
-   authenticators with authorization servers.  Once associated, an
+   authenticators with resource owners.  Once associated, an
    authenticator can be used for strong authorization within OAuth 2.0.
 
 Status of This Memo
@@ -64,7 +64,7 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
    authorization, it must associate resource owners with one or more
    authenticators capable of responding to a strong authorization
    challenge.  This specification describes how an authenticator can be
-   dynamically associated with an authorization server to obtain this
+   dynamically associated with a resource owner to obtain this
    information.
 
 1.1.  Notational Conventions
@@ -84,13 +84,35 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 2.  Authenticator Associate Endpoint
 
-   The associate endpoint is used by the client to associate an
-   authenticator with an authorization server.
+   The authenticator associate endpoint is an OAuth 2.0 endpoint defined
+   in this document that is designed to allow an authenticator to be
+   associated with a resource owner.  The authenticator associate
+   endpoint MUST accept HTTP POST messages with request parameters
+   encoded in the entity body using the "application/json" format.  The
+   authenticator associate endpoint MUST be protected by a transport-
+   layer security mechanism.
+
+   The authenticator associate endpoint MUST be an OAuth 2.0 protected
+   resource and it MUST accept access tokens as defined by [RFC6750] to
+   limit association to only previously authorized parties.  The method
+   by which the access token is obtained by the client is generally out
+   of band; two such mechanisms are defined by this specification.  The
+   method by which the access token is verified and validated by the
+   authenticator associate endpoint is out of scope for this
+   specification.
 
 2.1.  Authenticator Associate Request
 
-   The client makes a request to the associate endpoint by sending the
-   following parameters with a content type of "application/json":
+   The client makes a request to the authenticator associate endpoint by
+   sending the following parameters with a content type of "application/
+   json":
+
+
+
+Hanson                  Expires January 15, 2018                [Page 2]
+
+Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+
 
    authenticator_types
          OPTIONAL.  Array of authenticator type strings that the client
@@ -105,15 +127,6 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
          the authenticator type extension process.
 
    oob_channels
-
-
-
-
-Hanson                  Expires January 15, 2018                [Page 2]
-
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
-
-
          OPTIONAL.  Array of out-of-band channel strings that the client
          supports.  These out-of-band channels are defined as follows:
 
@@ -134,32 +147,19 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
          used when the client indicates support for authenticator types
          including the value "oob".
 
-   If the client was issued client credentials (or assigned other
-   authentication requirements), the client MUST authenticate with the
-   authorization server as described in Section 3.2.1 of [RFC6749].
+   The access token MUST be sent as a Bearer Token, per section 2 of
+   [RFC6750].  It is RECOMMENDED that the access token be sent using the
+   Authorization header field.
 
-   For example, the client makes the following HTTPS request (line
-   breaks are for display purposes only)::
 
-   POST /associate HTTP/1.1
-   Host: server.example.com
-   Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
-   Content-Type: application/json
 
-   {
-   "mfa_token": "eyJhbGciOiJ...",
-   "authenticator_types": [
-     "otp", "oob"
-   ]
-   }
 
-   The authorization server MUST:
 
-   o  require client authentication for confidential clients or for any
-      client that was issued client credentials (or with other
-      authentication requirements),
 
-   o  authenticate the client if client authentication is included,
+
+
+
+
 
 
 
@@ -170,16 +170,21 @@ Hanson                  Expires January 15, 2018                [Page 3]
 Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
-   o  ensure the MFA token was issued to the authenticated confidential
-      client, or if the client is public, ensure the MFA token was
-      issued to "client_id" in the request,
+   For example, the client makes the following HTTPS request (line
+   breaks are for display purposes only)::
 
-   o  verify that the MFA token is valid, and
+   POST /associate HTTP/1.1
+   Host: server.example.com
+   Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+   Content-Type: application/json
 
-   o  ensure that MFA binding is allowed based on the claims in the MFA
-      token.
+   {
+   "authenticator_types": [
+     "otp", "oob"
+   ]
+   }
 
-2.2.  Associate Response
+2.2.  Authenticator Associate Response
 
    If the associate request is valid and authorized, the authorization
    server selects an authenticator that the client is capable of
@@ -211,11 +216,6 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
               DOI 10.17487/RFC2119, March 1997,
               <http://www.rfc-editor.org/info/rfc2119>.
 
-   [RFC4627]  Crockford, D., "The application/json Media Type for
-              JavaScript Object Notation (JSON)", RFC 4627,
-              DOI 10.17487/RFC4627, July 2006,
-              <http://www.rfc-editor.org/info/rfc4627>.
-
 
 
 
@@ -226,9 +226,19 @@ Hanson                  Expires January 15, 2018                [Page 4]
 Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
+   [RFC4627]  Crockford, D., "The application/json Media Type for
+              JavaScript Object Notation (JSON)", RFC 4627,
+              DOI 10.17487/RFC4627, July 2006,
+              <http://www.rfc-editor.org/info/rfc4627>.
+
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
               <http://www.rfc-editor.org/info/rfc6749>.
+
+   [RFC6750]  Jones, M. and D. Hardt, "The OAuth 2.0 Authorization
+              Framework: Bearer Token Usage", RFC 6750,
+              DOI 10.17487/RFC6750, October 2012,
+              <http://www.rfc-editor.org/info/rfc6750>.
 
    [I-D.ietf-oauth-discovery]
               Jones, M., Sakimura, N., and J. Bradley, "OAuth 2.0
@@ -242,16 +252,6 @@ Author's Address
 
    Email: jaredhanson@gmail.com
    URI:   http://www.jaredhanson.net/
-
-
-
-
-
-
-
-
-
-
 
 
 

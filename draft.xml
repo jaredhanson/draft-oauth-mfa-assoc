@@ -18,8 +18,8 @@
     <date/>
     <abstract>
       <t>This specification defines mechanisms for dynamically associating
-        authenticators with authorization servers.  Once associated, an
-        authenticator can be used for strong authorization within OAuth 2.0.</t>
+        authenticators with resource owners.  Once associated, an authenticator
+        can be used for strong authorization within OAuth 2.0.</t>
     </abstract>
   </front>
   <middle>
@@ -30,8 +30,7 @@
         authorization, it must associate resource owners with one or more
         authenticators capable of responding to a strong authorization
         challenge.  This specification describes how an authenticator can be
-        dynamically associated with an authorization server to obtain this
-        information.
+        dynamically associated with a resource owner to obtain this information.
       </t>
         
       <section title="Notational Conventions">
@@ -55,14 +54,29 @@
     
     <section title="Authenticator Associate Endpoint">
       <t>
-        The associate endpoint is used by the client to associate an
-        authenticator with an authorization server.
+        The authenticator associate endpoint is an OAuth 2.0 endpoint defined in
+        this document that is designed to allow an authenticator to be
+        associated with a resource owner.  The authenticator associate endpoint
+        MUST accept HTTP POST messages with request parameters encoded in the
+        entity body using the "application/json" format.  The authenticator
+        associate endpoint MUST be protected by a transport-layer security
+        mechanism.
+      </t>
+      <t>
+        The authenticator associate endpoint MUST be an OAuth 2.0 protected
+        resource and it MUST accept access tokens as defined by <xref target='RFC6750'/>
+        to limit association to only previously authorized parties.  The method
+        by which the access token is obtained by the client is generally out of
+        band; two such mechanisms are defined by this specification.  The method
+        by which the access token is verified and validated by the authenticator
+        associate endpoint is out of scope for this specification.
       </t>
         
-      <section title='Authenticator Associate Request' anchor="token-req">
+      <section title='Authenticator Associate Request' anchor="assoc-req">
         <t>
-          The client makes a request to the associate endpoint by sending
-          the following parameters with a content type of <spanx style='verb'>application/json</spanx>:
+          The client makes a request to the authenticator associate endpoint by
+          sending the following parameters with a content type of
+          <spanx style='verb'>application/json</spanx>:
         </t>
         <t>
           <list style='hanging' hangIndent='6'>
@@ -113,9 +127,9 @@
           </list>
         </t>
         <t>
-          If the client was issued client credentials (or assigned other
-          authentication requirements), the client MUST authenticate with the
-          authorization server as described in Section 3.2.1 of <xref target="RFC6749"/>.
+          The access token MUST be sent as a Bearer Token, per section 2 of
+          <xref target='RFC6750'/>.  It is RECOMMENDED that the access token be
+          sent using the Authorization header field.
         </t>
         <figure>
           <preamble>
@@ -129,44 +143,15 @@ Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
 Content-Type: application/json
 
 {
-"mfa_token": "eyJhbGciOiJ...",
 "authenticator_types": [
   "otp", "oob"
 ]
 }
 ]]></artwork>
         </figure>
-        <t>
-          The authorization server MUST:
-        </t>
-        <t>
-          <list style='symbols'>
-            <t>
-              require client authentication for confidential clients or for
-              any client that was issued client credentials (or with other
-              authentication requirements),
-            </t>
-            <t>
-              authenticate the client if client authentication is included,
-            </t>
-            <t>
-              ensure the MFA token was issued to the authenticated
-              confidential client, or if the client is public, ensure the MFA
-              token was issued to <spanx style='verb'>client_id</spanx> in the
-              request,
-            </t>
-            <t>
-              verify that the MFA token is valid, and
-            </t>
-            <t>
-              ensure that MFA binding is allowed based on the claims in the
-              MFA token.
-            </t>
-          </list>
-        </t>
       </section>
       
-      <section title='Associate Response' anchor="token-res">
+      <section title='Authenticator Associate Response' anchor="assoc-res">
         <t>
           If the associate request is valid and authorized, the authorization
           server selects an authenticator that the client is capable of
@@ -208,6 +193,7 @@ Content-Type: application/json
       <?rfc include="reference.RFC.2119"?>
       <?rfc include="reference.RFC.4627"?>
       <?rfc include="reference.RFC.6749"?>
+      <?rfc include="reference.RFC.6750"?>
       <?rfc include='http://xml2rfc.tools.ietf.org/public/rfc/bibxml3/reference.I-D.draft-ietf-oauth-discovery-05.xml'?>
     </references>
   </back>
