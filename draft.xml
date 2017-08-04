@@ -97,6 +97,11 @@
               Authorization servers MAY allow for other values as defined in
               the authenticator type extension process.
             </t>
+            <t hangText='phone_number'>
+              <vspace />
+              OPTIONAL. For 'sms' and 'tel' oob challenges, the phone number 
+              to send challenge via SMS or call to the resource owner.
+            </t>
             <t hangText='oob_channels'>
               <vspace />
               OPTIONAL. Array of out-of-band channel strings that the client
