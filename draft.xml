@@ -196,6 +196,144 @@ Content-Type: application/json
       </section>
     </section>
     
+    <section title="Authenticator Association List Endpoint">
+      <t>
+        The authenticator list endpoint is an OAuth 2.0 endpoint defined in
+        this document that is designed to allow listing all the authenticators
+        associated with a resource owner.  The authenticator list endpoint
+        MUST accept HTTP GET messages.  The authenticator
+        list endpoint MUST be protected by a transport-layer security
+        mechanism.
+      </t>
+      <t>
+        The authenticator associate endpoint MUST be an OAuth 2.0 protected
+        resource and it MUST accept access tokens as defined by <xref target='RFC6750'/>
+        to limit listing of authenticators to only previously authorized parties.  The method
+        by which the access token is obtained by the client is generally out of
+        band; one of such mechanisms is defined by this specification.  The method
+        by which the access token is verified and validated by the authenticator
+        associate endpoint is out of scope for this specification.
+      </t>
+        
+      <section title='Authenticator Association List Request' anchor="list-req">
+        <t>
+          The client makes a request to the authenticator list endpoint
+          including no parameters.
+        </t>
+        <t>
+          The access token MUST be sent as a Bearer Token, per section 2 of
+          <xref target='RFC6750'/>.  It is RECOMMENDED that the access token be
+          sent using the Authorization header field.
+        </t>
+        <figure>
+          <preamble>
+            For example, the client makes the following HTTPS request (line
+            breaks are for display purposes only)::
+          </preamble>
+          <artwork><![CDATA[
+GET /associate HTTP/1.1
+Host: server.example.com
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+]]></artwork>
+        </figure>
+      </section>
+      
+      <section title='Authenticator Association List Response' anchor="list-res">
+        <t>
+          Upon a successful authenticator association list request, the authorization
+          server the server responsds with an HTTP 200 OK status code and a body of type "application/json"
+          with the following contentaining an array of all the authenticators associated with the resource 
+          owner each one of which will contain the following properties.
+        </t>
+        <t>
+          <list style='hanging' hangIndent='6'>
+            <t hangText='id'>
+              <vspace />
+              REQUIRED.  Authenticator id that associated with the user's
+              account.
+              
+              Id is RECCOMENDED to be a low entropy value with
+              a high probability of collision for different 
+              resource owners to prevent unauthorized leaking of 
+              trackeable information.
+            </t>
+            <t hangText='authenticator_type'>
+              <vspace />
+              REQUIRED.  Authenticator type that associated with the user's
+              account.
+            </t>
+            <t hangText='label'>
+              <vspace />
+              OPTIONAL. A human-readable label to identify the authenticator
+            </t>
+          </list>
+        </t>
+      </section>
+    </section>
+    
+    <section title="Authenticator Delete Endpoint">
+      <t>
+        The authenticator delete endpoint is an OAuth 2.0 endpoint defined in
+        this document that is designed to allow a resource owner to be disasociated
+        with an authenticator.  The authenticator delete endpoint
+        MUST accept HTTP DELETE messages.  The authenticator
+        delete endpoint MUST be protected by a transport-layer security
+        mechanism.
+      </t>
+      <t>
+        The authenticator associate endpoint MUST be an OAuth 2.0 protected
+        resource and it MUST accept access tokens as defined by <xref target='RFC6750'/>
+        to limit deletion to only previously authorized parties.  The method
+        by which the access token is obtained by the client is generally out of
+        band; one of such mechanisms is defined by this specification.  The method
+        by which the access token is verified and validated by the authenticator
+        associate endpoint is out of scope for this specification.
+      </t>
+        
+      <section title='Authenticator Delete Request' anchor="del-req">
+        <t>
+          The client makes a request to the authenticator delete endpoint by
+          sending the following parameters
+        </t>
+        <t>
+          <list style='hanging' hangIndent='6'>
+            <t hangText='authenticator_id'>
+              <vspace />
+              OPTIONAL. Id of the authenticator that the user wants to delete.
+              
+              The authenticator_id is RECCOMENDED to be a low entropy value with
+              a high probability of collision for different resource owners to prevent
+              unauthorized leaking of trackeable information.
+            </t>
+          </list>
+        </t>
+        <t>
+          The access token MUST be sent as a Bearer Token, per section 2 of
+          <xref target='RFC6750'/>.  It is RECOMMENDED that the access token be
+          sent using the Authorization header field.
+        </t>
+        <figure>
+          <preamble>
+            For example, the client makes the following HTTPS request (line
+            breaks are for display purposes only)::
+          </preamble>
+          <artwork><![CDATA[
+DELETE /associate/1234 HTTP/1.1
+Host: server.example.com
+Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+]]></artwork>
+        </figure>
+      </section>
+      
+      <section title='Authenticator Delete Response' anchor="del-res">
+        <t>
+          Upon a successful authenticator delete request, the authorization
+          server the server responsds with an HTTP 204 No Content status code and
+          an empty body.
+        </t>
+      </section>
+    </section>
+    
   </middle>
   <back>
     <references title="Normative References">
