@@ -197,6 +197,9 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
          REQUIRED.  Authenticator type that was associated with the
          user's account.
 
+   oob_channel
+         OPTIONAL.  out-of-band channel the authenticator will use.
+
    barcode_uri
          OPTIONAL.  URI to be rendered as a barcode which can be scanned
          by the authenticator to effect provisioning.
