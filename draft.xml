@@ -259,10 +259,15 @@ Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
             </t>
             <t hangText='authenticator_type'>
               <vspace />
-              REQUIRED.  Authenticator type that associated with the user's
+              REQUIRED.  Authenticator type that is associated with the user's
               account.
             </t>
-            <t hangText='label'>
+            <t hangText='oob_channel'>
+              <vspace />
+              OPTIONAL. Out-of-band channel that is used by the authenticator. 
+              Required when `authenticator_type` is `oob`. 
+            </t>
+            <t hangText='name'>
               <vspace />
               OPTIONAL. A human-readable label to identify the authenticator
             </t>
