@@ -172,6 +172,10 @@ Content-Type: application/json
               REQUIRED.  Authenticator type that was associated with the user's
               account.
             </t>
+            <t hangText='oob_channel'>
+              <vspace />
+              REQUIRED.  The out-of-band channel to use.
+            </t>
             <t hangText='barcode_uri'>
               <vspace />
               OPTIONAL. URI to be rendered as a barcode which can be scanned
