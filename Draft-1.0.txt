@@ -4,7 +4,7 @@
 
 Network Working Group                                          J. Hanson
 Internet-Draft                                                Auth0 Inc.
-Expires: January 15, 2018                                  July 14, 2017
+Expires: March 2, 2018                                   August 29, 2017
 
 
             OAuth 2.0 Multi-Factor Authenticator Association
@@ -31,7 +31,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 15, 2018.
+   This Internet-Draft will expire on March 2, 2018.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Hanson                  Expires January 15, 2018                [Page 1]
+Hanson                    Expires March 2, 2018                 [Page 1]
 
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
 
 
 1.  Introduction
@@ -109,9 +109,9 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
 
-Hanson                  Expires January 15, 2018                [Page 2]
+Hanson                    Expires March 2, 2018                 [Page 2]
 
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
 
 
    authenticator_types
@@ -125,6 +125,10 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
          Authorization servers MAY allow for other values as defined in
          the authenticator type extension process.
+
+   phone_number
+         OPTIONAL.  For 'sms' and 'tel' oob challenges, the phone number
+         to send challenge via SMS or call to the resource owner.
 
    oob_channels
          OPTIONAL.  Array of out-of-band channel strings that the client
@@ -161,13 +165,9 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
 
-
-
-
-
-Hanson                  Expires January 15, 2018                [Page 3]
+Hanson                    Expires March 2, 2018                 [Page 3]
 
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
 
 
    For example, the client makes the following HTTPS request (line
@@ -197,6 +197,9 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
          REQUIRED.  Authenticator type that was associated with the
          user's account.
 
+   oob_channel
+         REQUIRED.  The out-of-band channel to use.
+
    barcode_uri
          OPTIONAL.  URI to be rendered as a barcode which can be scanned
          by the authenticator to effect provisioning.
@@ -218,34 +221,156 @@ Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
 
 
 
-
-
-
-Hanson                  Expires January 15, 2018                [Page 4]
+Hanson                    Expires March 2, 2018                 [Page 4]
 
-Internet-DraOAuth 2.0 Multi-Factor Authenticator Association   July 2017
+Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
 
 
-3.  Normative References
+3.  Authenticator Association List Endpoint
+
+   The authenticator list endpoint is an OAuth 2.0 endpoint defined in
+   this document that is designed to allow listing all the
+   authenticators associated with a resource owner.  The authenticator
+   list endpoint MUST accept HTTP GET messages.  The authenticator list
+   endpoint MUST be protected by a transport-layer security mechanism.
+
+   The authenticator associate endpoint MUST be an OAuth 2.0 protected
+   resource and it MUST accept access tokens as defined by [RFC6750] to
+   limit listing of authenticators to only previously authorized
+   parties.  The method by which the access token is obtained by the
+   client is generally out of band; one of such mechanisms is defined by
+   this specification.  The method by which the access token is verified
+   and validated by the authenticator associate endpoint is out of scope
+   for this specification.
+
+3.1.  Authenticator Association List Request
+
+   The client makes a request to the authenticator list endpoint
+   including no parameters.
+
+   The access token MUST be sent as a Bearer Token, per section 2 of
+   [RFC6750].  It is RECOMMENDED that the access token be sent using the
+   Authorization header field.
+
+   For example, the client makes the following HTTPS request (line
+   breaks are for display purposes only)::
+
+   GET /associate HTTP/1.1
+   Host: server.example.com
+   Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+
+3.2.  Authenticator Association List Response
+
+   Upon a successful authenticator association list request, the
+   authorization server the server responsds with an HTTP 200 OK status
+   code and a body of type "application/json" with the following
+   contentaining an array of all the authenticators associated with the
+   resource owner each one of which will contain the following
+   properties.
+
+   id
+         REQUIRED.  Authenticator id that associated with the user's
+         account.  Id is RECCOMENDED to be a low entropy value with a
+         high probability of collision for different resource owners to
+         prevent unauthorized leaking of trackeable information.
+
+
+
+
+Hanson                    Expires March 2, 2018                 [Page 5]
+
+Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
+
+
+   authenticator_type
+         REQUIRED.  Authenticator type that is associated with the
+         user's account.
+
+   oob_channel
+         OPTIONAL.  Out-of-band channel that is used by the
+         authenticator.  Required when `authenticator_type` is `oob`.
+
+   name
+         OPTIONAL.  A human-readable label to identify the authenticator
+
+4.  Authenticator Delete Endpoint
+
+   The authenticator delete endpoint is an OAuth 2.0 endpoint defined in
+   this document that is designed to allow a resource owner to be
+   disasociated with an authenticator.  The authenticator delete
+   endpoint MUST accept HTTP DELETE messages.  The authenticator delete
+   endpoint MUST be protected by a transport-layer security mechanism.
+
+   The authenticator associate endpoint MUST be an OAuth 2.0 protected
+   resource and it MUST accept access tokens as defined by [RFC6750] to
+   limit deletion to only previously authorized parties.  The method by
+   which the access token is obtained by the client is generally out of
+   band; one of such mechanisms is defined by this specification.  The
+   method by which the access token is verified and validated by the
+   authenticator associate endpoint is out of scope for this
+   specification.
+
+4.1.  Authenticator Delete Request
+
+   The client makes a request to the authenticator delete endpoint by
+   sending the following parameters
+
+   authenticator_id
+         OPTIONAL.  Id of the authenticator that the user wants to
+         delete.  The authenticator_id is RECCOMENDED to be a low
+         entropy value with a high probability of collision for
+         different resource owners to prevent unauthorized leaking of
+         trackeable information.
+
+   The access token MUST be sent as a Bearer Token, per section 2 of
+   [RFC6750].  It is RECOMMENDED that the access token be sent using the
+   Authorization header field.
+
+
+
+
+
+
+
+
+Hanson                    Expires March 2, 2018                 [Page 6]
+
+Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
+
+
+   For example, the client makes the following HTTPS request (line
+   breaks are for display purposes only)::
+
+   DELETE /associate/1234 HTTP/1.1
+   Host: server.example.com
+   Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
+
+4.2.  Authenticator Delete Response
+
+   Upon a successful authenticator delete request, the authorization
+   server the server responsds with an HTTP 204 No Content status code
+   and an empty body.
+
+5.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <http://www.rfc-editor.org/info/rfc2119>.
+              DOI 10.17487/RFC2119, March 1997, <https://www.rfc-
+              editor.org/info/rfc2119>.
 
    [RFC4627]  Crockford, D., "The application/json Media Type for
               JavaScript Object Notation (JSON)", RFC 4627,
-              DOI 10.17487/RFC4627, July 2006,
-              <http://www.rfc-editor.org/info/rfc4627>.
+              DOI 10.17487/RFC4627, July 2006, <https://www.rfc-
+              editor.org/info/rfc4627>.
 
    [RFC6749]  Hardt, D., Ed., "The OAuth 2.0 Authorization Framework",
               RFC 6749, DOI 10.17487/RFC6749, October 2012,
-              <http://www.rfc-editor.org/info/rfc6749>.
+              <https://www.rfc-editor.org/info/rfc6749>.
 
    [RFC6750]  Jones, M. and D. Hardt, "The OAuth 2.0 Authorization
               Framework: Bearer Token Usage", RFC 6750,
-              DOI 10.17487/RFC6750, October 2012,
-              <http://www.rfc-editor.org/info/rfc6750>.
+              DOI 10.17487/RFC6750, October 2012, <https://www.rfc-
+              editor.org/info/rfc6750>.
 
    [I-D.ietf-oauth-discovery]
               Jones, M., Sakimura, N., and J. Bradley, "OAuth 2.0
@@ -264,17 +389,4 @@ Author's Address
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-Hanson                  Expires January 15, 2018                [Page 5]
+Hanson                    Expires March 2, 2018                 [Page 7]
