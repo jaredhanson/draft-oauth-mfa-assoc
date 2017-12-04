@@ -92,6 +92,10 @@
                 <t><spanx style="verb">oob</spanx>: A device that communicates
                 securely with the authorization server over a secondary
                 channel.</t>
+
+                <t><spanx style="verb">recovery-code</spanx>: A a physical or
+                electronic set of secrets shared between the resource owner
+                and the authorization server.</t>
               </list>
               
               Authorization servers MAY allow for other values as defined in
@@ -174,7 +178,9 @@ Content-Type: application/json
             </t>
             <t hangText='oob_channel'>
               <vspace />
-              REQUIRED.  The out-of-band channel to use.
+              OPTIONAL.  The out-of-band channel to use. The parameter
+              MUST be included when the value of "authenticator_type" is
+              "oob" and MUST NOT be included otherwise.
             </t>
             <t hangText='barcode_uri'>
               <vspace />
@@ -185,6 +191,8 @@ Content-Type: application/json
               <vspace />
               OPTIONAL. An array of strings to be used as recovery codes to gain
               access in the event that an authenticator is lost or malfunctions.
+              The parameter MUST be included when the value of "authenticator_type"
+              is "recovery-code" and MAY be included otherwise.
             </t>
             <t hangText='oob_code'>
               <vspace />
