@@ -102,6 +102,11 @@
               OPTIONAL. For 'sms' and 'tel' oob challenges, the phone number 
               to send challenge via SMS or call to the resource owner.
             </t>
+            <t hangText='email'>
+              <vspace />
+              OPTIONAL. For 'email' oob challenges, the address
+              to send challenge via e-mail to the resource owner.
+            </t>
             <t hangText='oob_channels'>
               <vspace />
               OPTIONAL. Array of out-of-band channel strings that the client
