@@ -166,7 +166,7 @@ Content-Type: application/json
           Upon a successful authenticator associate request, the authorization
           server selects an authenticator type that the client is capable of
           supporting and returns parameters needing to be bound to the device in
-          order to complete the assocation process.  The server responsds with
+          order to complete the assocation process.  The server responds with
           an HTTP 201 Created status code and a body of type "application/json"
           with the following content:
         </t>
@@ -250,15 +250,15 @@ Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
       <section title='Authenticator Association List Response' anchor="list-res">
         <t>
           Upon a successful authenticator association list request, the authorization
-          server the server responsds with an HTTP 200 OK status code and a body of type "application/json"
-          with the following contentaining an array of all the authenticators associated with the resource 
+          server responds with an HTTP 200 OK status code and a body of type "application/json"
+          containing an array of all the authenticators associated with the resource
           owner each one of which will contain the following properties.
         </t>
         <t>
           <list style='hanging' hangIndent='6'>
             <t hangText='id'>
               <vspace />
-              REQUIRED.  Authenticator id that associated with the user's
+              REQUIRED.  Authenticator id associated with the user's
               account.
               
               Id is RECCOMENDED to be a low entropy value with
@@ -288,7 +288,7 @@ Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
     <section title="Authenticator Delete Endpoint">
       <t>
         The authenticator delete endpoint is an OAuth 2.0 endpoint defined in
-        this document that is designed to allow a resource owner to be disasociated
+        this document that is designed to allow a resource owner to be dissasociated
         with an authenticator.  The authenticator delete endpoint
         MUST accept HTTP DELETE messages.  The authenticator
         delete endpoint MUST be protected by a transport-layer security
@@ -342,7 +342,7 @@ Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
       <section title='Authenticator Delete Response' anchor="del-res">
         <t>
           Upon a successful authenticator delete request, the authorization
-          server the server responsds with an HTTP 204 No Content status code and
+          server responds with an HTTP 204 No Content status code and
           an empty body.
         </t>
       </section>
