@@ -134,6 +134,10 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
          OPTIONAL.  For 'sms' and 'tel' oob challenges, the phone number
          to send challenge via SMS or call to the resource owner.
 
+   email
+         OPTIONAL.  For 'email' oob challenges, the address to send
+         challenge via e-mail to the resource owner.
+
    oob_channels
          OPTIONAL.  Array of out-of-band channel strings that the client
          supports.  These out-of-band channels are defined as follows:
@@ -161,10 +165,6 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 
 
 
-
-
-
-
 Hanson                    Expires June 21, 2018                 [Page 3]
 
 Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
@@ -189,7 +189,7 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
    Upon a successful authenticator associate request, the authorization
    server selects an authenticator type that the client is capable of
    supporting and returns parameters needing to be bound to the device
-   in order to complete the assocation process.  The server responsds
+   in order to complete the assocation process.  The server responds
    with an HTTP 201 Created status code and a body of type "application/
    json" with the following content:
 
@@ -265,15 +265,15 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 3.2.  Authenticator Association List Response
 
    Upon a successful authenticator association list request, the
-   authorization server the server responsds with an HTTP 200 OK status
-   code and a body of type "application/json" with the following
-   contentaining an array of all the authenticators associated with the
-   resource owner each one of which will contain the following
-   properties.
+   authorization server responds with an HTTP 200 OK status code and a
+   body of type "application/json" containing an array of all the
+   authenticators associated with the resource owner each one of which
+   will contain the following properties.
 
    id
-         REQUIRED.  Authenticator id that associated with the user's
-         account.  Id is RECCOMENDED to be a low entropy value with a
+         REQUIRED.  Authenticator id associated with the user's account.
+         Id is RECCOMENDED to be a low entropy value with a high
+
 
 
 
@@ -282,7 +282,7 @@ Hanson                    Expires June 21, 2018                 [Page 5]
 Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 
 
-         high probability of collision for different resource owners to
+         probability of collision for different resource owners to
          prevent unauthorized leaking of trackeable information.
 
    authenticator_type
@@ -300,7 +300,7 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 
    The authenticator delete endpoint is an OAuth 2.0 endpoint defined in
    this document that is designed to allow a resource owner to be
-   disasociated with an authenticator.  The authenticator delete
+   dissasociated with an authenticator.  The authenticator delete
    endpoint MUST accept HTTP DELETE messages.  The authenticator delete
    endpoint MUST be protected by a transport-layer security mechanism.
 
@@ -348,8 +348,8 @@ Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 4.2.  Authenticator Delete Response
 
    Upon a successful authenticator delete request, the authorization
-   server the server responsds with an HTTP 204 No Content status code
-   and an empty body.
+   server responds with an HTTP 204 No Content status code and an empty
+   body.
 
 5.  Normative References
 
