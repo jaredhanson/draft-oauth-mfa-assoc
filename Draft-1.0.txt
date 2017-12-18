@@ -4,7 +4,7 @@
 
 Network Working Group                                          J. Hanson
 Internet-Draft                                                Auth0 Inc.
-Expires: March 2, 2018                                   August 29, 2017
+Expires: June 21, 2018                                 December 18, 2017
 
 
             OAuth 2.0 Multi-Factor Authenticator Association
@@ -31,7 +31,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on March 2, 2018.
+   This Internet-Draft will expire on June 21, 2018.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Hanson                    Expires March 2, 2018                 [Page 1]
+Hanson                    Expires June 21, 2018                 [Page 1]
 
-Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 
 
 1.  Introduction
@@ -109,9 +109,9 @@ Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
 
 
 
-Hanson                    Expires March 2, 2018                 [Page 2]
+Hanson                    Expires June 21, 2018                 [Page 2]
 
-Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 
 
    authenticator_types
@@ -122,6 +122,10 @@ Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
 
          *  "oob": A device that communicates securely with the
             authorization server over a secondary channel.
+
+         *  "recovery-code": A a physical or electronic set of secrets
+            shared between the resource owner and the authorization
+            server.
 
          Authorization servers MAY allow for other values as defined in
          the authenticator type extension process.
@@ -161,13 +165,9 @@ Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
 
 
 
-
-
-
-
-Hanson                    Expires March 2, 2018                 [Page 3]
+Hanson                    Expires June 21, 2018                 [Page 3]
 
-Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 
 
    For example, the client makes the following HTTPS request (line
@@ -198,7 +198,9 @@ Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
          user's account.
 
    oob_channel
-         REQUIRED.  The out-of-band channel to use.
+         OPTIONAL.  The out-of-band channel to use.  The parameter MUST
+         be included when the value of "authenticator_type" is "oob" and
+         MUST NOT be included otherwise.
 
    barcode_uri
          OPTIONAL.  URI to be rendered as a barcode which can be scanned
@@ -207,24 +209,25 @@ Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
    recovery_codes
          OPTIONAL.  An array of strings to be used as recovery codes to
          gain access in the event that an authenticator is lost or
-         malfunctions.
+         malfunctions.  The parameter MUST be included when the value of
+         "authenticator_type" is "recovery-code" and MAY be included
+         otherwise.
 
    oob_code
          OPTIONAL.  Out-of-band transaction code as defined by section
          3.2.1 of OAuth 2.0 Multi-Factor Authorization.  The parameter
          SHOULD be included when the value of "authenticator_type" is
          "oob" and MUST NOT be included otherwise.  The value of this
+
+
+
+Hanson                    Expires June 21, 2018                 [Page 4]
+
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
+
+
          parameter MAY be used in an access token request as defined by
          section 3.2.3 of OAuth 2.0 Multi-Factor Authorization.
-
-
-
-
-
-Hanson                    Expires March 2, 2018                 [Page 4]
-
-Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
-
 
 3.  Authenticator Association List Endpoint
 
@@ -271,16 +274,16 @@ Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
    id
          REQUIRED.  Authenticator id that associated with the user's
          account.  Id is RECCOMENDED to be a low entropy value with a
+
+
+
+Hanson                    Expires June 21, 2018                 [Page 5]
+
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
+
+
          high probability of collision for different resource owners to
          prevent unauthorized leaking of trackeable information.
-
-
-
-
-Hanson                    Expires March 2, 2018                 [Page 5]
-
-Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
-
 
    authenticator_type
          REQUIRED.  Authenticator type that is associated with the
@@ -330,12 +333,9 @@ Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
 
 
 
-
-
-
-Hanson                    Expires March 2, 2018                 [Page 6]
+Hanson                    Expires June 21, 2018                 [Page 6]
 
-Internet-DrafOAuth 2.0 Multi-Factor Authenticator Associatio August 2017
+Internet-DraftOAuth 2.0 Multi-Factor Authenticator AssociatDecember 2017
 
 
    For example, the client makes the following HTTPS request (line
@@ -389,4 +389,4 @@ Author's Address
 
 
 
-Hanson                    Expires March 2, 2018                 [Page 7]
+Hanson                    Expires June 21, 2018                 [Page 7]
