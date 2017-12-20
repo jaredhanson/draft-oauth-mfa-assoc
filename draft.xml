@@ -279,6 +279,18 @@ Authorization: Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW
               REQUIRED.  Authenticator type that is associated with the user's
               account.
             </t>
+            <t hangText='active'>
+              <vspace />
+              REQUIRED. Whether the authenticator can be used to authenticate an user. 
+              An authenticator usually becomes active after
+              all the procedures to ensure a correct enrollment have been performed
+              and validated. The procedures might be different depending on the
+              authenticator, some of them require user interation (e.g. using the authenticator
+              for the first time) whereas some others does not require it. It is
+              up to the Authorization Server to decide when an authenticator becomes active.
+              Once active, an authenticator is consider to be able to guarantee the security
+              properties it was designed for in the context of the Authorization Server.
+            </t>
             <t hangText='oob_channel'>
               <vspace />
               OPTIONAL. Out-of-band channel that is used by the authenticator. 
